@@ -143,7 +143,7 @@ function ColorWheel({ size = 320, value, onChange }) {
     const cx = d / 2, cy = d / 2;
 
     // redraw pointer overlay
-    ctx.clearRect(0, 0, d, d);
+    // ctx.clearRect(0, 0, d, d);
 
     // redraw wheel bitmap was already put once; so we draw it again from saved image
     // For performance, keep a separate static layer would be ideal; here we redraw the wheel image by triggering once above.
@@ -323,12 +323,20 @@ export default function App() {
 
   const current = colors[trialIndex];
 
+  // const updateCurrent = (hsv) => {
+  //   const hex = hsvToHex(hsv.h, hsv.s, hsv.v);
+  //   const next = colors.slice();
+  //   next[trialIndex] = { ...hsv, hex };
+  //   setColors(next);
+  // };
   const updateCurrent = (hsv) => {
-    const hex = hsvToHex(hsv.h, hsv.s, hsv.v);
-    const next = colors.slice();
-    next[trialIndex] = { ...hsv, hex };
-    setColors(next);
-  };
+  const hex = hsvToHex(hsv.h, hsv.s, hsv.v ?? 1); // ensure v=1
+  setColors(prev => {
+    const next = prev.slice();
+    next[trialIndex] = { ...hsv, v: hsv.v ?? 1, hex };
+    return next;
+  });
+};
 
   const goNext = () => {
     if (trialIndex < 2) setTrialIndex(trialIndex + 1);
